@@ -15,6 +15,6 @@ router.get('/view/:id' , cors(), searchBook)
 
 router.get('/translate/:bahasa/:description', cors(), translateDes)
 
-router.get('/curreny', cors(), curreny)
+router.get('/curreny/:valueKonversi/:nominalKonversi', cors(), curreny)
 
 module.exports = router;

@@ -41,11 +41,17 @@ module.exports = {
     },
 
     curreny (req , res){
-        axios.get('https://forex.1forge.com/1.0.3/convert?from=USD&to=EUR&quantity=100&api_key=eCN4ji2EuOjv783I9CxyvY8MGzV8yoNH')
+        axios.get(`http://apilayer.net/api/live?access_key=7eb19c5529a77954afb272c0b1922684&currencies=IDR&source=USD&format=1`)
         .then(function (response) {
-            res.status(200).json({
-                data: response.data
-            })
+            if(Object.keys(response.data.quotes)==req.params.valueKonversi){
+                res.status(200).json({
+                    data: req.params.nominalKonversi/response.data.quotes.USDIDR
+                })
+            }else{
+                res.status(200).json({
+                    data: req.params.nominalKonversi
+                })
+            }
         })
         .catch(function (error) {
             res.status(400).json({
