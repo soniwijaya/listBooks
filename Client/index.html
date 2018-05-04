@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.11/css/all.css" integrity="sha384-p2jx59pefphTFIpeqCcISO9MdVfIm4pNnsL08A6v5vaQc4owkQqxMV8kg4Yvhaw/" crossorigin="anonymous">
   
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-  <script src="/js/login.js"></script>
+  <!-- <script src="/js/login.js"></script> -->
   <title>Home</title>
 </head>
 <body>
@@ -22,10 +22,72 @@
     <div class="header-content">
       <h1>Hello</h1>
       <p>Ini adalah project group pertama di phase 2. Project bertema MVP dari online bookstore.</p>
-      <a href="" class="btn" scope="public_profile,email" autologoutlink=true onlogin="checkLoginState()">login with facebook</a>
+      <!-- <a href="" class="btn" scope="public_profile,email" autologoutlink=true onclick="checkLoginState()">login with facebook</a> -->
+      <fb:login-button  scope="public_profile,email" autologoutlink=true onlogin="checkLoginState();">
+              </fb:login-button>
     </div>
   </header>
+<!-- <h1 id='status'></h1> -->
+  <!-- <script src="/js/login.js"></script> -->
+  <script>
 
-  <script src="/js/login.js"></script>
+      function seeProfile() {
+          alert('Fungsi keKlik Jalan gan')
+      }
+
+      function checkLoginState() {
+          FB.getLoginStatus(function(response) {
+              console.log(response)
+              if(response.status == 'connected') {
+                  // console.log('status sukses login, save token bro')
+                  statusChangeCallback(response);
+              }
+          });
+      }
+
+      function statusChangeCallback(response) {
+          FB.api(`/me`, {
+              fields: ['email', 'picture', 'name']
+          }, function (profile) {
+              axios.post('http://localhost:3000/logins', {nama:profile.name,email:profile.email})
+                .then(responseServer => {
+                  let token = responseServer.data.token
+                  console.log('token---->', token)
+                  localStorage.setItem('token', token)
+                  console.log('data from server----->', responseServer)
+                  window.location.href='./bookstore.html'
+                })
+                .catch(err => {
+                  console.log(err)
+                })
+          })
+      }
+
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId      : '2071877699726111',
+          cookie     : true,
+          xfbml      : true,
+          version    : 'v3.0'
+        });
+          
+        FB.AppEvents.logPageView();
+          
+      };
+    
+      (function(d, s, id){
+         var js, fjs = d.getElementsByTagName(s)[0];
+         if (d.getElementById(id)) {return;}
+         js = d.createElement(s); js.id = id;
+         js.src = "https://connect.facebook.net/en_US/sdk.js";
+         fjs.parentNode.insertBefore(js, fjs);
+       }(document, 'script', 'facebook-jssdk'));
+
+        function checkLoginState() {
+          FB.getLoginStatus(function(response) {
+            console.log(response)
+          });
+        }
+  </script>
 </body>
 </html>
